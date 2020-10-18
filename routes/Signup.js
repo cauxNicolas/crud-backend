@@ -1,13 +1,20 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+// hashage password
+const uid2 = require("uid2");
+const enBase64 = require("crypto-js/enc-base64");
+const SHA256 = require("crypto-js/sha256");
 
 router.post("/signup", async (req, res) => {
   try {
+    console.log(req.fields);
+
     const name = req.fields.name;
     const lastname = req.fields.lastname;
     const email = req.fields.email;
     const textarea = req.fields.textarea;
+    const password = req.fields.password;
 
     if (
       // contrôle pour ne pas envoyer d'espaces vides en bdd
@@ -23,11 +30,18 @@ router.post("/signup", async (req, res) => {
       if (search) {
         res.status(400).json(" existe déjà !");
       } else {
+        // hashage password
+        const salt = uid2(16);
+        const token = uid2(16);
+        const hash = SHA256(password + salt).toString(enBase64);
         const newUser = new User({
           name,
           lastname,
           email,
           textarea,
+          salt,
+          token,
+          hash,
         });
         await newUser.save();
         // on renvoit la réponse de mongoDB
@@ -37,7 +51,8 @@ router.post("/signup", async (req, res) => {
           lastname: newUser.lastname,
           email: newUser.email,
           textarea: newUser.textarea,
-          info: "Inscription réussie !",
+          info:
+            "Inscription réussie ! Vous allez être redirigé vers la page login",
         });
       }
     }
