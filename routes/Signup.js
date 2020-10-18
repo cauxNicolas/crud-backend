@@ -19,14 +19,26 @@ router.post("/signup", async (req, res) => {
         .status(400)
         .json("Merci de ne pas remplir les champs avec des espaces");
     } else {
-      const newUser = new User({
-        name,
-        lastname,
-        email,
-        textarea,
-      });
-      await newUser.save();
-      res.status(200).json({ name, lastname, email, textarea });
+      const search = await User.findOne({ email: req.fields.email });
+      if (search) {
+        res.status(400).json("L'email existe déjà");
+      } else {
+        const newUser = new User({
+          name,
+          lastname,
+          email,
+          textarea,
+        });
+        await newUser.save();
+        // on renvoit la réponse de mongoDB
+        res.status(200).json({
+          _id: newUser._id,
+          name: newUser.name,
+          lastname: newUser.lastname,
+          email: newUser.email,
+          textarea: newUser.textarea,
+        });
+      }
     }
   } catch (error) {
     res.status(400).json({ message: error.message });
