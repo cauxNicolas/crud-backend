@@ -21,7 +21,7 @@ router.post("/signup", async (req, res) => {
     } else {
       const search = await User.findOne({ email: req.fields.email });
       if (search) {
-        res.status(400).json("L'email existe déjà");
+        res.status(400).json(" existe déjà !");
       } else {
         const newUser = new User({
           name,
@@ -37,6 +37,7 @@ router.post("/signup", async (req, res) => {
           lastname: newUser.lastname,
           email: newUser.email,
           textarea: newUser.textarea,
+          info: "Inscription réussie !",
         });
       }
     }
