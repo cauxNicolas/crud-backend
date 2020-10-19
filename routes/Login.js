@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
       if (newHash === search.hash) {
         res.status(200).json("page login ok");
       } else {
-        res.status(400).json("l'email ou le mot de passe n'est pas correct");
+        res.status(400).json("Email ou mot de passe erronés");
       }
     }
   } catch (error) {

@@ -19,6 +19,8 @@ const Signup = require("./routes/Signup");
 app.use(Signup);
 const Login = require("./routes/Login");
 app.use(Login);
+const Home = require("./routes/Home");
+app.use(Home);
 
 // catch error
 app.all("*", (req, res) => {
