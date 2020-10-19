@@ -8,8 +8,6 @@ const SHA256 = require("crypto-js/sha256");
 
 router.post("/signup", async (req, res) => {
   try {
-    console.log(req.fields);
-
     const name = req.fields.name;
     const lastname = req.fields.lastname;
     const email = req.fields.email;
@@ -17,6 +15,15 @@ router.post("/signup", async (req, res) => {
     const password = req.fields.password;
 
     if (
+      // constrole pour avoir des champs remplis
+      name === "" ||
+      lastname === "" ||
+      email === "" ||
+      textarea === "" ||
+      password === ""
+    ) {
+      res.status(400).json("Merci de remplir les champs");
+    } else if (
       // contrôle pour ne pas envoyer d'espaces vides en bdd
       !name.replace(/\s+/, "").length ||
       !lastname.replace(/\s+/, "").length ||
