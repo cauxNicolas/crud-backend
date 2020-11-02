@@ -5,7 +5,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 // connexion bdd
-mongoose.connect("mongodb://localhost/crud", {
+mongoose.connect(process.env.MONGOOSE, {
   useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -31,6 +31,6 @@ app.all("*", (req, res) => {
   }
 });
 
-app.listen(3100, () => {
+app.listen(process.env.PORT || 3100, () => {
   console.log("server CRUD started");
 });

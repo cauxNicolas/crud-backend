@@ -5,6 +5,12 @@ const User = require("../models/User");
 const uid2 = require("uid2");
 const enBase64 = require("crypto-js/enc-base64");
 const SHA256 = require("crypto-js/sha256");
+// mailgun
+const mailgun = require("mailgun-js");
+const mg = mailgun({
+  apiKey: process.env.MAILGUN_APIK_KEY,
+  domain: process.env.MAILGUN_DOMAIN,
+});
 
 router.post("/signup", async (req, res) => {
   try {
@@ -51,6 +57,16 @@ router.post("/signup", async (req, res) => {
           hash,
         });
         await newUser.save();
+        // mailgun
+        const data = {
+          from: "CRUD <exemple@gmail.com>",
+          to: `${email}`,
+          subject: "CRUD : Inscription réussie !",
+          text: `Bonjour ${lastname}, \nveuillez trouver votre identifiant et votre mot de passe pour vous connecter à votre session : \n\nIdentifiant : ${email}\nMot de passe: ${password}\n\nToute l'équipe vous souhaite une excellente journée journée`,
+        };
+        await mg.messages().send(data, function (error, body) {
+          console.log("body ->", body);
+        });
         // on renvoit la réponse de mongoDB
         res.status(200).json({
           _id: newUser._id,
